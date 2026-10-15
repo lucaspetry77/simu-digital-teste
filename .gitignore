@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dados brutos baixados por `npm run data:sync`
+/data/raw
+
+# configurações locais do Claude Code
+.claude/settings.local.json

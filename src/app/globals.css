@@ -1,26 +1,346 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Tokens do SIMU
+   Papel quente + tinta + um azul de caneta como marca. Cada área do ENEM tem
+   uma cor própria, usada como acento (ícones, gráficos, chips).
+
+   Os componentes da biblioteca Arc UI (components/arc) leem tokens semânticos
+   próprios (--surface, --accent…). Logo abaixo eles são apontados para a
+   paleta do SIMU: os componentes são do Arc, a identidade visual é do SIMU.
+   ────────────────────────────────────────────────────────────────────────── */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  /* Fundo branco liso; o calor fica nos contornos e nas áreas rebaixadas, em bege. */
+  --bg: #ffffff;
+  --bg-elev: #ffffff;
+  --bg-sunken: #f6f3ec;
+  --bg-hover: #f8f5ef;
+  --line: #e8e0cf;
+  --line-strong: #d8ccb4;
+  --ink: #16161b;
+  --ink-2: #4b4a54;
+  /* 5,4:1 sobre --bg e 4,9:1 sobre --bg-sunken (AA). O tom anterior, #7b7985, dava 3,9:1, e é a cor
+     de todo texto de apoio pequeno (11,5–13px). */
+  --ink-3: #6b6975;
+  --ink-inverse: #ffffff;
+
+  --brand: #3e4df5;
+  --brand-hover: #2f3ee0;
+  --brand-ink: #2b37c4;
+  --brand-soft: #eaecff;
+  --brand-softer: #f4f5ff;
+
+  --ok: #0d8a5d;
+  --ok-soft: #e2f4ea;
+  --bad: #d13b2f;
+  --bad-soft: #fce8e5;
+  --warn: #a96300;
+  --warn-soft: #fff1d6;
+
+  --hl: #ffe866;
+  --hl-soft: rgb(255 226 74 / 0.55);
+
+  --area-lc: #7a5af8;
+  --area-ch: #e3741b;
+  --area-cn: #11a15a;
+  --area-mt: #0b8fd3;
+
+  --simu-shadow-sm: 0 1px 0 rgb(22 22 27 / 0.04), 0 1px 2px rgb(22 22 27 / 0.06);
+  --simu-shadow-md: 0 1px 0 rgb(22 22 27 / 0.03), 0 4px 16px -4px rgb(22 22 27 / 0.1);
+  --simu-shadow-lg: 0 2px 0 rgb(22 22 27 / 0.02), 0 24px 48px -16px rgb(22 22 27 / 0.22);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0d0e12;
+  --bg-elev: #15161c;
+  --bg-sunken: #0a0b0e;
+  --bg-hover: #1b1c24;
+  --line: #24262e;
+  --line-strong: #353843;
+  --ink: #ededf2;
+  --ink-2: #b6b6c1;
+  --ink-3: #85858f;
+  --ink-inverse: #0d0e12;
+
+  --brand: #6b78ff;
+  --brand-hover: #7d89ff;
+  --brand-ink: #aeb5ff;
+  --brand-soft: #1d2152;
+  --brand-softer: #15183a;
+
+  --ok: #3ccf8e;
+  --ok-soft: #0f2a1f;
+  --bad: #ff6b5e;
+  --bad-soft: #351714;
+  --warn: #f2b03c;
+  --warn-soft: #33250d;
+
+  --hl: #ffe866;
+  --hl-soft: rgb(255 226 74 / 0.32);
+
+  --area-lc: #a08bff;
+  --area-ch: #ff9a47;
+  --area-cn: #3fd389;
+  --area-mt: #3db8ff;
+
+  --simu-shadow-sm: 0 1px 0 rgb(0 0 0 / 0.3);
+  --simu-shadow-md: 0 8px 24px -8px rgb(0 0 0 / 0.6);
+  --simu-shadow-lg: 0 24px 64px -16px rgb(0 0 0 / 0.75);
+}
+
+/* Tokens do Arc UI → paleta do SIMU (mesma especificidade e depois do
+   foundation.css, então estes valores vencem nos dois temas). */
+:root,
+:root[data-theme="light"],
+:root[data-theme="dark"] {
+  --background: var(--bg);
+  --surface: var(--bg-elev);
+  --surface-raised: var(--bg-elev);
+  --surface-muted: var(--bg-sunken);
+  --foreground: var(--ink);
+  --text-secondary: var(--ink-2);
+  --text-muted: var(--ink-3);
+  --border: var(--line);
+  --border-subtle: var(--line);
+  --border-strong: var(--line-strong);
+  --accent: var(--brand);
+  --accent-strong: var(--brand-hover);
+  --accent-subtle: var(--brand-soft);
+  --accent-foreground: #ffffff;
+  --control-on: var(--brand);
+  --control-fill: var(--brand);
+  --control-glyph: #ffffff;
+  --control-thumb-on: #ffffff;
+  --success: var(--ok);
+  --warning: var(--warn);
+  --danger: var(--bad);
+  --shadow-resting: var(--simu-shadow-sm);
+  --shadow-raised: var(--simu-shadow-md);
+  --shadow-floating: var(--simu-shadow-lg);
+  --radius-control: 12px;
+  --radius-panel: 20px;
+  --radius-surface: 28px;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --tracking-body: -0.006em;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-elev: var(--bg-elev);
+  --color-sunken: var(--bg-sunken);
+  --color-hover: var(--bg-hover);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-inverse: var(--ink-inverse);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-softer: var(--brand-softer);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-hl: var(--hl);
+  --color-lc: var(--area-lc);
+  --color-ch: var(--area-ch);
+  --color-cn: var(--area-cn);
+  --color-mt: var(--area-mt);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-read: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-sm: var(--simu-shadow-sm);
+  --shadow-md: var(--simu-shadow-md);
+  --shadow-lg: var(--simu-shadow-lg);
+
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+  --radius-3xl: 20px;
+
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
   }
 }
 
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  letter-spacing: var(--tracking-body);
+  font-feature-settings: "cv11", "ss01";
+}
+
+::selection {
+  background: var(--brand-soft);
+  color: var(--ink);
+}
+
+/* Grão de papel bem sutil no fundo, só no tema escuro (no claro o fundo é branco liso) */
+[data-theme="dark"] .paper {
+  background-image: radial-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: var(--tracking-display);
+}
+
+@layer components {
+  /* ── Texto de prova (ajustável pelo estudante) ──────────────────────────── */
+  .reading {
+    font-family: var(--font-body);
+    font-size: var(--reading-size, 1.0625rem);
+    line-height: 1.7;
+    letter-spacing: -0.006em;
+    color: var(--ink);
+    overflow-wrap: break-word;
+  }
+  .reading p + p,
+  .reading p + ul,
+  .reading ul + p {
+    margin-top: 0.9em;
+  }
+  .reading strong {
+    font-weight: 500;
+  }
+  .reading img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.1em auto;
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  [data-theme="dark"] .reading img {
+    filter: brightness(0.92);
+  }
+  .reading table {
+    width: 100%;
+    margin: 1em 0;
+    border-collapse: collapse;
+    font-size: 0.92em;
+  }
+  .reading th,
+  .reading td {
+    border: 1px solid var(--line);
+    padding: 0.4em 0.6em;
+    text-align: left;
+  }
+  .reading blockquote {
+    border-left: 2px solid var(--line-strong);
+    padding-left: 1em;
+    color: var(--ink-2);
+  }
+  .reading ul,
+  .reading ol {
+    padding-left: 1.4em;
+    margin: 0.6em 0;
+    list-style: revert;
+  }
+  .reading a {
+    color: var(--brand-ink);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .reading .katex {
+    font-size: 1.04em;
+  }
+  /* O KaTeX desenha o traço da fração com 0,04em: numa fração de texto (~14px) isso dá 0,5px, que
+     some em tela retina e faz "1/12" parecer "1 12". Nunca menos que 1px. */
+  .reading .katex .frac-line,
+  .reading .katex .overline-line,
+  .reading .katex .underline-line {
+    border-bottom-width: max(1px, 0.04em) !important;
+  }
+  .reading .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.2em 0;
+  }
+}
+
+/* Marca-texto: CSS Custom Highlight API, sem mexer no DOM do React */
+::highlight(simu-marker) {
+  background-color: var(--hl-soft);
+  color: inherit;
+}
+
+/* ── Utilidades ───────────────────────────────────────────────────────────── */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hover só em ponteiros precisos, para não "grudar" no toque */
+@media (hover: hover) and (pointer: fine) {
+  .lift {
+    transition:
+      transform var(--duration-spring) var(--ease-spring),
+      box-shadow var(--duration-standard) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard);
+  }
+  .lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-raised);
+    border-color: var(--line-strong);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
